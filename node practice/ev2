@@ -1,0 +1,14 @@
+const fs = require('fs');
+const a = 100;
+
+setImmediate(() => console.log('Set immediate'));
+Promise.resolve().then(() => console.log('Promise resolved'));
+
+process.nextTick(() => console.log('Next tick'));
+
+fs.readFile("./file.txt", "utf-8", () => {
+    console.log("file is read");
+});
+
+setTimeout(() => console.log('Set timeout'), 0);
+process.nextTick(() => console.log('Next tick 2'));
