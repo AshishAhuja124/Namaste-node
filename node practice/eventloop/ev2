@@ -1,0 +1,34 @@
+const fs = require('fs');
+const a = 100;
+
+// setImmediate runs later in the check phase of the event loop.
+setImmediate(() => console.log('Set immediate'));
+
+// Promise microtasks run after the current synchronous code and before other callbacks.
+Promise.resolve().then(() => console.log('Promise resolved'));
+
+// process.nextTick callbacks have the highest priority and run first.
+process.nextTick(() => console.log('Next tick'));
+
+// Reading a file is asynchronous I/O, so its callback runs after the I/O completes.
+fs.readFile("./file.txt", "utf-8", () => {
+    console.log("file is read");
+});
+
+// setTimeout with 0ms runs in the timer phase.
+setTimeout(() => console.log('Set timeout'), 0);
+
+// Another nextTick callback runs even before the promise callback.
+process.nextTick(() => console.log('Next tick 2'));
+
+// Output order:
+// Next tick
+// Next tick 2
+// Promise resolved
+// Set timeout
+// Set immediate
+// file is read
+//
+// Explanation:
+// process.nextTick callbacks run first, then promise microtasks,
+// then timer callbacks, then setImmediate, and finally the file I/O callback.
